@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>郑煤机集团 &middot; 销售管理子系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+
+      /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -24px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 24px;
+      }
+      #footer {
+        background-color: #f5f5f5;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 1400px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 46px;
+      }
+      .container .credit {
+        margin: 2px 0;
+      }
+
+      code {
+        font-size: 80%;
+      }
+	
+	 .cBinfo { 
+		height: 20px;
+		width: 20px;
+		vertical-align: top;
+		cursor: pointer;
+		float: left;
+		margin-left: 5px;
+		margin-right: 5px;
+		background: url(image/i_info.png) no-repeat ;
+	}
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="assets/ico/favicon.png">
+	<script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=70ea249de12b91e8694d09a853d7772c"></script>
+    <script src="js/jquery.js"></script>
+	<script language="javascript">
+		var mapObj,type,mousetool;
+		
+		var formconfig ;
+		
+		$(document).ready(function () {
+			 
+			
+			$('#agmap').css('height',$('body').height() -50-$('#footer').height());
+		   mapInit();
+		   $('li li:has(span)').bind('click',function(e){
+		   
+				if(mousetool != undefined){
+					mousetool.marker();  
+				}
+				 //$('#modal .modal-header')
+				//$('#modal .modal-body')
+				var fun = $(this).attr('fun');
+				if(formconfig == undefined){
+					var request = $.ajax({
+					  url: "config/info.config",
+					  type: "POST", 
+					  dataType: "json"
+					});
+					 
+					request.done(function(data) {
+					  formconfig = data;
+					});
+					 
+					request.fail(function(jqXHR, textStatus) {
+					  alert( "Request failed: " + textStatus );
+					});
+				}
+				
+				//data[fun]
+				$('#modal .modal-header').html('基础信息');
+				$('#modal .modal-body').html();
+		   });
+		});
+		function mapInit(){
+
+			mapObj = new AMap.Map("agmap",{ 
+				level:15
+			});
+			
+			var buildings = new AMap.Buildings();
+			buildings.setMap(mapObj);
+			
+			mapObj.plugin(["AMap.ToolBar"],function(){  
+			//加载工具条  
+				var tool = new AMap.ToolBar({  
+					ruler:true,
+					autoPosition:true
+				});  
+				mapObj.addControl(tool);      
+			});
+			mapObj.plugin(["AMap.MapType"],function(){ 
+				//地图类型切换 
+				type= new AMap.MapType; 
+				mapObj.addControl(type); 
+			});	
+			mapObj.plugin(["AMap.MouseTool"],function(){ 
+				mousetool = new AMap.MouseTool(mapObj); 
+				
+				AMap.event.addListener(mousetool,'draw',function(e){
+				 
+					$('#modal').modal();
+					mousetool.close(false);
+				});
+			 });		
+		} 
+	</script>							   
+  </head>
+
+  <body>
+
+
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+		 
+            <a class="brand" href="#"> hehe</a>
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="active"><a href="#">地图</a></li> 
+				<li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">信息管理 <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li fun='jcxx'><a href="#"><span class="cBinfo" title="内容"></span> 基础信息 </a></li>
+                    <li><a href="#"><span class="cBinfo" title="内容"></span> 产品信息</a></li>
+                    <li><a href="#"><span class="cBinfo" title="内容"></span> 回款信息</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#"><span class="cBinfo" title="内容"></span> 支架产出动态信息</a></li>
+                    <li><a href="#"><span class="cBinfo" title="内容"></span> 竞争对手信息</a></li> 
+                  </ul>
+                </li>
+                
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">工具 <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">公交导航查询</a></li>
+                    <li><a href="#">驾车路线查询</a></li> 
+                    <li class="divider"></li>
+                    <li class="nav-header">地图工具</li>
+                    <li><a href="#">测距</a></li>
+                    <li><a href="#">测面</a></li>
+					<li><a href="#">清除</a></li> 
+                  </ul>
+                </li>
+				
+				<li><a href="#about">关于</a></li>
+                <li><a href="#contact">帮助</a></li>
+				<form class="navbar-search pull-left">
+				  <input type="text" class="search-query" placeholder="搜素定位">
+				</form>
+              </ul>
+			 <form class="navbar-form pull-right">
+              <input class="span2" type="text" placeholder="用户名">
+              <input class="span2" type="password" placeholder="密码">
+              <button type="submit" class="btn">登陆</button>
+			</form>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Begin page content -->
+      <div class="container">
+         <div id="agmap" style="width:100%; ">
+		 
+		<div id="modal" class="modal hide fade">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>Modal header</h3>
+		  </div>
+		  <div class="modal-body">
+			<p>One fine body…</p>
+		  </div>
+		  <div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+			<a href="#" class="btn btn-primary">Save changes</a>
+		  </div>
+		</div>
+		</div> 
+      </div>
+
+      <div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+       <center> <p class="muted credit">@技术支持 <a href="http://www.bitcitycn.com/">郑州比城科技有限公司</a> and <a href="http://www.zzmj.com/">郑煤机集团</a>.</p><center>
+      </div>
+    </div>
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+	
+	
+  </body>
+</html>
